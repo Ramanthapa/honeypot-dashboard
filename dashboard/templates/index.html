@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Honeypot Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #060612;
+            font-family: 'Inter', Arial, sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(0,255,245,0.1);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 {
+            color: #00fff5;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .header p {
+            color: #4a5568;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff41;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .live-badge {
+            color: #00ff41;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+        .stat-card h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #00fff5;
+            margin-bottom: 6px;
+        }
+        .stat-card p {
+            color: #4a5568;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .card h3 {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .chart-wrap {
+            width: 200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            color: #4a5568;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        td {
+            padding: 10px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: #a0aec0;
+        }
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .critical { background: rgba(252,129,129,0.15); color: #fc8181; }
+        .high { background: rgba(246,173,85,0.15); color: #f6ad55; }
+        .medium { background: rgba(246,224,94,0.15); color: #f6e05e; }
+        .low { background: rgba(104,211,145,0.15); color: #68d391; }
+        .nav-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #00fff5;
+            font-size: 13px;
+            text-decoration: none;
+            border: 1px solid rgba(0,255,245,0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            background: rgba(0,255,245,0.05);
+        }
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .header { padding: 16px; }
+            .header h1 { font-size: 16px; }
+            .stat-card h2 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <h1>🍯 Honeypot Dashboard</h1>
+        <p>Real-time attack monitoring system</p>
+    </div>
+    <div class="live-badge">
+        <span class="live-dot"></span> LIVE
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h2 id="total-count">{{ stats.total }}</h2>
+            <p>Total Attacks</p>
+        </div>
+        {% for type in stats.by_type %}
+        <div class="stat-card">
+            <h2>{{ type[1] }}</h2>
+            <p>{{ type[0] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <h3>Attack Types</h3>
+            <div class="chart-wrap">
+                <canvas id="attackChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Recent Attacks</h3>
+            <table>
+                <tr>
+                    <th>Time</th>
+                    <th>IP</th>
+                    <th>Type</th>
+                    <th>Threat</th>
+                </tr>
+                {% for attack in attacks %}
+                <tr>
+                    <td>{{ attack[1][11:19] }}</td>
+                    <td>{{ attack[2] }}</td>
+                    <td>{{ attack[4] }}</td>
+                    <td>
+                        <span class="badge {{ attack[8].lower() }}">
+                            {{ attack[8] }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <a href="/logs" class="nav-link">View All Logs →</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const ctx = document.getElementById('attackChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: [{% for t in stats.by_type %}'{{ t[0] }}',{% endfor %}],
+        datasets: [{
+            data: [{% for t in stats.by_type %}{{ t[1] }},{% endfor %}],
+            backgroundColor: ['#fc8181', '#63b3ed', '#68d391'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        plugins: { legend: { labels: { color: '#a0aec0', font: { size: 11 } } } },
+        cutout: '70%'
+    }
+});
+
+setInterval(() => {
+    fetch('/api/stats')
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('total-count').textContent = data.total;
+        });
+}, 5000);
+</script>
+
+</body>
+</html>
