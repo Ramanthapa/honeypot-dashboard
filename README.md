@@ -8,10 +8,10 @@ stuff — HTTP trap, FTP trap, a database, and finally a live dashboard. Took me
 around 15 days to get it working properly.
 
 <img width="1365" height="601" alt="screenshot" src="https://github.com/user-attachments/assets/1e1d9422-5cfd-4369-950d-acbed918b49a" />
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Flask](https://img.shields.io/badge/Flask-2.0-lightgrey)
-![SQLite](https://img.shields.io/badge/Database-SQLite-green)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+[![Python](https://img.shields.io/badge/Python-3.10-blue)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.0-lightgrey)](https://flask.palletsprojects.com)
+[![SQLite](https://img.shields.io/badge/Database-SQLite-green)](https://sqlite.org)
+[![Status](https://img.shields.io/badge/Status-Active-brightgreen)](#)
 
 ## What it does
 
