@@ -40,20 +40,22 @@ Then open http://localhost:5000 in your browser.
 
 ## Project Structure
 
+```
 honeypot-dashboard/
 ├── honeypot/
-│   ├── ssh_trap.py       
-│   ├── http_trap.py      
-│   └── ftp_trap.py       
+│   ├── ssh_trap.py
+│   ├── http_trap.py
+│   └── ftp_trap.py
 ├── core/
-│   ├── database.py       
-│   └── detector.py       
+│   ├── database.py
+│   └── detector.py
 ├── dashboard/
-│   ├── app.py            
-│   └── templates/        
+│   ├── app.py
+│   └── templates/
 ├── logs/
-│   └── attacks.db        
-└── main.py               
+│   └── attacks.db
+└── main.py
+```
 
 ## Threat Levels
 
